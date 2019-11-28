@@ -31,7 +31,40 @@ class App extends Component {
     .then((data) => data.json())
     .then((res) => this.setState({ data: res.data}));
   }
-  
+  putDataToDB = (message)=>{
+    let currentIDs = this.state.data.map((data)=> data.id);
+    let idToBeAdded = 0;
+    while(currentIDs.includes(idToBeAdded)){
+      ++idToBeAdded;
+    }
+    axios.post('http://localhost:3001/api/putData',{
+      id: idToBeAdded,
+      message: message
+    });
+  };
+  deleteFromDB = (idToDelete) =>{
+    parseInt(idToDelete);
+    let objIdToDelete = null;
+    this.state.data.forEach((dat)=>{
+      if (dat.id == idToDelete){
+        objIdToDelete = dat._id;
+      }
+    });
+    axios.delete('http://localhost:3001/api/deleteData',{
+      data: {
+        id: objIdToDelete
+      }
+    });
+  };
+  updateFromDB =(idToUpdate) =>{
+    parseInt(idToUpdate);
+
+    this.state.data.forEach((dat) =>{
+      if (dat.id == idToUpdate){
+        
+      }
+    })
+  }
   render(){
     const {data} = this.state;
     return(
@@ -40,9 +73,10 @@ class App extends Component {
           {data.length<=0
             ? 'No Db Entries Yet'
             : data.map((dat)=>(
-              <li style={{padding:'10px'}} key={data.message}>
+              <li style={{padding:'10px'}} key={data.id}>
                 <span style={{color:'gray'}}>id:</span>{dat.id}<br/>
                 <span style={{color:'gray'}}>data:</span>{dat.message};
+                
               </li>
               )
             )
@@ -55,6 +89,22 @@ class App extends Component {
             placeholder="add something in the database"
             style={{width:'200px'}}
           />
+          <button onClick={() => this.putDataToDB(this.state.message)}>
+            ADD
+          </button>
+        </div>
+        <div style={{padding: '10PX'}}>
+          <input
+            type="text"
+            style={{width:'200px'}}
+            onChange ={(e) => this.setState({idToDelete: e.target.value})}
+            placeholder = "enter an id which you want to delete"
+
+          />
+          <button onClick = {() => this.deleteFromDB(this.state.idToDelete)}>
+            Delete
+          </button>
+
         </div>
       </div>
     )
