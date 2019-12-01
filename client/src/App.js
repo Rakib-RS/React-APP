@@ -56,15 +56,20 @@ class App extends Component {
       }
     });
   };
-  updateFromDB =(idToUpdate) =>{
+  updateDB = (idToUpdate, updateToApply) => {
+    let objIdToUpdate = null;
     parseInt(idToUpdate);
-
-    this.state.data.forEach((dat) =>{
-      if (dat.id == idToUpdate){
-        
+    this.state.data.forEach((dat) => {
+      if (dat.id == idToUpdate) {
+        objIdToUpdate = dat._id;
       }
-    })
-  }
+    });
+
+    axios.post('http://localhost:3001/api/updateData', {
+      id: objIdToUpdate,
+      update: { message: updateToApply },
+    });
+  };
   render(){
     const {data} = this.state;
     return(
@@ -105,6 +110,24 @@ class App extends Component {
             Delete
           </button>
 
+        </div>
+        <div style={{padding: '10px'}}>
+        <input
+          type="text"
+          onChange = {(e)=> this.setState({idToUpdate: e.target.value})}
+        />
+        <input
+          type="text"
+          onChange ={(e)=> this.setState({updateToApply:e.target.value})}
+        />
+
+          <button
+            onClick={() =>
+              this.updateDB(this.state.idToUpdate, this.state.updateToApply)
+            }
+          >
+            UPDATE
+          </button>
         </div>
       </div>
     )

@@ -39,11 +39,12 @@ router.post('/putData',(req,res)=>{
 });
 router.post('/updateData',(req,res)=>{
   const {id,update} = req.body;
-  console.log("update= " + update);
+  //console.log("update= " + update);
   console.log(req.body);
+  //var ob = {message};
+  console.log(update);
   
-  
-  Data.findOneAndUpdate(id,update,{new:true},(err)=>{
+  Data.findByIdAndUpdate(id,update,(err)=>{
     if(err) return res.json({sucess:false,error:err});
     return res.json({sucess:true});
   })
